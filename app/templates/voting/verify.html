@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Voter Verification{% endblock %}
+{% block content %}
+<section class="card vote-card">
+  <h1>School Prefectorial Voting</h1>
+  {% if election %}
+    <p class="muted">Current election: <strong>{{ election.name }}</strong></p>
+    <form method="post" action="{{ url_for('voting.verify') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label for="student_id">Student ID</label>
+      <input id="student_id" name="student_id" type="text" required autofocus>
+
+      <label for="pin">PIN (if required)</label>
+      <input id="pin" name="pin" type="password">
+
+      <button type="submit" class="btn btn-large full">Verify and Continue</button>
+    </form>
+  {% else %}
+    <p>No election is currently open. Please contact an administrator.</p>
+  {% endif %}
+</section>
+{% endblock %}
+

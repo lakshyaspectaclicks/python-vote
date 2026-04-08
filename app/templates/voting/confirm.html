@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Confirm Vote{% endblock %}
+{% block content %}
+<section class="card vote-card">
+  <h1>Confirm Your Selections</h1>
+  <table>
+    <thead><tr><th>Position</th><th>Candidate</th><th>Class</th></tr></thead>
+    <tbody>
+      {% for item in lines %}
+      <tr>
+        <td>{{ item.position_name }}</td>
+        <td>{{ item.candidate_name }}</td>
+        <td>{{ item.candidate_class }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <form method="post" action="{{ url_for('voting.submit') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="vote_token" value="{{ vote_token }}">
+    <button type="submit" class="btn btn-large full btn-success">Submit Final Vote</button>
+  </form>
+  <a class="btn btn-large full btn-light" href="{{ url_for('voting.ballot') }}">Back to Ballot</a>
+</section>
+{% endblock %}
+

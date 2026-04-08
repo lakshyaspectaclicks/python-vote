@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Results{% endblock %}
+{% block content %}
+<section class="card">
+  <div class="card-head">
+    <h1>Results · {{ payload.election.name }}</h1>
+    <div class="actions">
+      <a class="btn btn-small" href="{{ url_for('exports.export_csv', election_id=payload.election.id) }}">Export CSV</a>
+      <a class="btn btn-small" href="{{ url_for('exports.export_pdf', election_id=payload.election.id) }}">Export PDF</a>
+      <a class="btn btn-small" href="{{ url_for('admin.elections') }}">Back</a>
+    </div>
+  </div>
+  <div class="stats-row">
+    <div><strong>Status:</strong> {{ payload.election.status }}</div>
+    <div><strong>Registered:</strong> {{ payload.totals.registered_voters }}</div>
+    <div><strong>Ballots:</strong> {{ payload.totals.ballots_cast }}</div>
+    <div><strong>Turnout:</strong> {{ payload.totals.turnout_percent }}%</div>
+  </div>
+</section>
+
+{% for position in payload.positions %}
+<section class="card">
+  <h2>{{ position.position_name }}</h2>
+  <table>
+    <thead><tr><th>Candidate</th><th>Class</th><th>Votes</th><th>Status</th></tr></thead>
+    <tbody>
+      {% for candidate in position.candidates %}
+      <tr>
+        <td>{{ candidate.candidate_name }}</td>
+        <td>{{ candidate.candidate_class }}</td>
+        <td>{{ candidate.vote_count }}</td>
+        <td>
+          {% if candidate.status == "Winner" %}
+          <span class="pill pill-success">Winner</span>
+          {% elif candidate.status == "Tie" %}
+          <span class="pill pill-warning">Tie</span>
+          {% else %}
+          {{ candidate.status }}
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% else %}
+<section class="card"><p>No result rows available yet.</p></section>
+{% endfor %}
+{% endblock %}
+

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Elections{% endblock %}
+{% block content %}
+<section class="card">
+  <div class="card-head">
+    <h1>Elections</h1>
+    <a class="btn" href="{{ url_for('admin.election_create') }}">Create Election</a>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Status</th>
+        <th>Period</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for election in elections %}
+      <tr>
+        <td>{{ election.name }}</td>
+        <td><span class="pill pill-{{ election.status|lower }}">{{ election.status }}</span></td>
+        <td>{{ election.start_at or "-" }} to {{ election.end_at or "-" }}</td>
+        <td class="actions">
+          <a class="btn btn-small" href="{{ url_for('admin.election_edit', election_id=election.id) }}">Edit</a>
+          <a class="btn btn-small" href="{{ url_for('admin.positions', election_id=election.id) }}">Positions</a>
+          <a class="btn btn-small" href="{{ url_for('admin.candidates', election_id=election.id) }}">Candidates</a>
+          <a class="btn btn-small" href="{{ url_for('admin.voters', election_id=election.id) }}">Voters</a>
+          <a class="btn btn-small" href="{{ url_for('admin.results', election_id=election.id) }}">Results</a>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="4">No elections found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}
+

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Ballot{% endblock %}
+{% block content %}
+<section class="card vote-card">
+  <h1>Ballot</h1>
+  <p class="muted">Select one candidate for each position.</p>
+  <form method="post" action="{{ url_for('voting.confirm') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    {% for position in ballot_data %}
+      <fieldset class="ballot-group">
+        <legend>{{ position.name }}</legend>
+        {% for candidate in position.candidates %}
+          <label class="candidate-option">
+            <input type="radio" name="position_{{ position.id }}" value="{{ candidate.id }}" required>
+            {% if candidate.photo_path %}
+              <img class="avatar" src="{{ url_for('uploaded_file', filename=candidate.photo_path) }}" alt="{{ candidate.full_name }}">
+            {% endif %}
+            <span>
+              <strong>{{ candidate.full_name }}</strong>
+              <small>{{ candidate.class_name }}{% if candidate.gender %} · {{ candidate.gender }}{% endif %}</small>
+              {% if candidate.bio %}<small>{{ candidate.bio }}</small>{% endif %}
+            </span>
+          </label>
+        {% endfor %}
+      </fieldset>
+    {% endfor %}
+    <button type="submit" class="btn btn-large full">Continue to Confirmation</button>
+  </form>
+</section>
+{% endblock %}
+

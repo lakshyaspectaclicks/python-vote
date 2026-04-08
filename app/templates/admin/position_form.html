@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Edit Position{% endblock %}
+{% block content %}
+<section class="card narrow">
+  <h1>Edit Position</h1>
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label for="name">Name</label>
+    <input id="name" name="name" type="text" required value="{{ position.name }}">
+    <label for="display_order">Display Order</label>
+    <input id="display_order" name="display_order" type="number" min="1" required value="{{ position.display_order }}">
+    <button type="submit" class="btn">Save</button>
+  </form>
+</section>
+{% endblock %}
+

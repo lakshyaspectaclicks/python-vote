@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Vote Submitted{% endblock %}
+{% block content %}
+<section class="card vote-card center">
+  {% if voted %}
+    <h1>Vote Submitted Successfully</h1>
+    <p>Thank you. Your ballot has been recorded.</p>
+  {% else %}
+    <h1>Session Complete</h1>
+    <p>This voting session is no longer active.</p>
+  {% endif %}
+  <a class="btn btn-large" href="{{ url_for('voting.index') }}">Start Next Voter</a>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+  setTimeout(function () {
+    if (window.location.pathname.endsWith("/success")) {
+      window.location.assign("{{ url_for('voting.index') }}");
+    }
+  }, 12000);
+</script>
+{% endblock %}
+

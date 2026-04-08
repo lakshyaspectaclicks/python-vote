@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<section class="grid stats-grid">
+  <article class="card stat-card"><h2>{{ stats.total_elections }}</h2><p>Total Elections</p></article>
+  <article class="card stat-card"><h2>{{ stats.open_elections }}</h2><p>Open</p></article>
+  <article class="card stat-card"><h2>{{ stats.closed_elections }}</h2><p>Closed</p></article>
+  <article class="card stat-card"><h2>{{ stats.draft_elections }}</h2><p>Draft</p></article>
+</section>
+
+<section class="grid two-col">
+  <article class="card">
+    <div class="card-head">
+      <h2>Recent Elections</h2>
+      <a class="btn btn-small" href="{{ url_for('admin.elections') }}">Manage</a>
+    </div>
+    <table>
+      <thead><tr><th>Name</th><th>Status</th><th>Updated</th></tr></thead>
+      <tbody>
+      {% for election in elections %}
+        <tr>
+          <td><a href="{{ url_for('admin.election_edit', election_id=election.id) }}">{{ election.name }}</a></td>
+          <td><span class="pill pill-{{ election.status|lower }}">{{ election.status }}</span></td>
+          <td>{{ election.updated_at }}</td>
+        </tr>
+      {% else %}
+        <tr><td colspan="3">No elections found.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </article>
+
+  <article class="card">
+    <h2>Recent Audit Logs</h2>
+    <div class="log-list">
+      {% for log in audit_logs %}
+        <div class="log-item">
+          <p><strong>{{ log.action }}</strong> · {{ log.entity_type }} #{{ log.entity_id or "-" }}</p>
+          <p>{{ log.details or "" }}</p>
+          <small>{{ log.created_at }}{% if log.admin_username %} · {{ log.admin_username }}{% endif %}</small>
+        </div>
+      {% else %}
+        <p>No logs yet.</p>
+      {% endfor %}
+    </div>
+  </article>
+</section>
+{% endblock %}
+

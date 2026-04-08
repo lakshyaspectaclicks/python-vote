@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}{{ "Edit Election" if election else "Create Election" }}{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>{{ "Edit Election" if election else "Create Election" }}</h1>
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label for="name">Election Name</label>
+    <input id="name" name="name" type="text" required value="{{ election.name if election else '' }}">
+
+    <label for="description">Description</label>
+    <textarea id="description" name="description" rows="3">{{ election.description if election else '' }}</textarea>
+
+    <div class="grid two-col">
+      <div>
+        <label for="start_at">Start Date/Time</label>
+        <input id="start_at" name="start_at" type="datetime-local" value="{{ election.start_at.strftime('%Y-%m-%dT%H:%M') if election and election.start_at else '' }}">
+      </div>
+      <div>
+        <label for="end_at">End Date/Time</label>
+        <input id="end_at" name="end_at" type="datetime-local" value="{{ election.end_at.strftime('%Y-%m-%dT%H:%M') if election and election.end_at else '' }}">
+      </div>
+    </div>
+
+    {% if election %}
+    <label class="checkbox">
+      <input type="checkbox" name="results_visible" {% if election.results_visible %}checked{% endif %}>
+      Allow non-admin result preview before close
+    </label>
+    {% endif %}
+    <button type="submit" class="btn">{{ "Save Changes" if election else "Create Election" }}</button>
+  </form>
+</section>
+
+{% if election %}
+<section class="card">
+  <h2>Status Management</h2>
+  <p>Current status: <span class="pill pill-{{ election.status|lower }}">{{ election.status }}</span></p>
+  <div class="actions">
+    {% for s in ["OPEN", "PAUSED", "CLOSED"] %}
+    <form method="post" action="{{ url_for('admin.election_status', election_id=election.id) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" name="status" value="{{ s }}">
+      <button type="submit" class="btn btn-small">{{ s }}</button>
+    </form>
+    {% endfor %}
+    <form method="post" action="{{ url_for('admin.election_delete', election_id=election.id) }}" onsubmit="return confirm('Delete this election?')">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button type="submit" class="btn btn-small btn-danger">Delete</button>
+    </form>
+  </div>
+  <div class="actions">
+    <a class="btn btn-small" href="{{ url_for('admin.positions', election_id=election.id) }}">Manage Positions</a>
+    <a class="btn btn-small" href="{{ url_for('admin.candidates', election_id=election.id) }}">Manage Candidates</a>
+    <a class="btn btn-small" href="{{ url_for('admin.voters', election_id=election.id) }}">Manage Voters</a>
+    <a class="btn btn-small" href="{{ url_for('admin.results', election_id=election.id) }}">View Results</a>
+  </div>
+</section>
+{% endif %}
+{% endblock %}
+

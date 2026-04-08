@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Audit Logs{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>Audit Logs</h1>
+  <form method="get" class="inline-grid">
+    <input name="action" type="text" placeholder="Action filter" value="{{ action or '' }}">
+    <input name="admin_id" type="number" min="1" placeholder="Admin ID" value="{{ admin_id or '' }}">
+    <button type="submit" class="btn btn-small">Apply</button>
+    <a class="btn btn-small" href="{{ url_for('admin.audit_logs') }}">Reset</a>
+  </form>
+  <table>
+    <thead><tr><th>Time</th><th>Admin</th><th>Action</th><th>Entity</th><th>Details</th><th>IP</th></tr></thead>
+    <tbody>
+      {% for log in logs %}
+      <tr>
+        <td>{{ log.created_at }}</td>
+        <td>{{ log.admin_username or "-" }}</td>
+        <td>{{ log.action }}</td>
+        <td>{{ log.entity_type }} #{{ log.entity_id or "-" }}</td>
+        <td>{{ log.details or "-" }}</td>
+        <td>{{ log.ip_address or "-" }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6">No logs found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}
+

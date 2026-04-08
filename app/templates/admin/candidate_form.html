@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Edit Candidate{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>Edit Candidate</h1>
+  <form method="post" enctype="multipart/form-data" class="grid two-col">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div>
+      <label for="position_id">Position</label>
+      <select id="position_id" name="position_id" required>
+        {% for position in positions %}
+          <option value="{{ position.id }}" {% if position.id == candidate.position_id %}selected{% endif %}>
+            {{ position.name }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label for="full_name">Full Name</label>
+      <input id="full_name" name="full_name" type="text" required value="{{ candidate.full_name }}">
+    </div>
+    <div>
+      <label for="class_name">Class</label>
+      <input id="class_name" name="class_name" type="text" required value="{{ candidate.class_name }}">
+    </div>
+    <div>
+      <label for="gender">Gender</label>
+      <input id="gender" name="gender" type="text" value="{{ candidate.gender or '' }}">
+    </div>
+    <div class="full-width">
+      <label for="bio">Bio / Manifesto</label>
+      <textarea id="bio" name="bio" rows="3">{{ candidate.bio or '' }}</textarea>
+    </div>
+    <div class="full-width">
+      <label for="photo">Replace Photo</label>
+      <input id="photo" name="photo" type="file" accept=".jpg,.jpeg,.png,.webp">
+    </div>
+    {% if candidate.photo_path %}
+    <div class="full-width">
+      <img class="avatar large" src="{{ url_for('uploaded_file', filename=candidate.photo_path) }}" alt="{{ candidate.full_name }}">
+      <label class="checkbox"><input type="checkbox" name="remove_photo"> Remove existing photo</label>
+    </div>
+    {% endif %}
+    <div class="full-width">
+      <label class="checkbox"><input type="checkbox" name="is_active" {% if candidate.is_active %}checked{% endif %}> Active</label>
+    </div>
+    <div class="full-width">
+      <button type="submit" class="btn">Save Candidate</button>
+    </div>
+  </form>
+</section>
+{% endblock %}
+

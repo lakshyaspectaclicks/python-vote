@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Server Error{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>Unexpected Error</h1>
+  <p>An internal error occurred. Please contact the voting administrator.</p>
+  <a class="btn" href="{{ url_for('voting.index') }}">Back to Voting Home</a>
+</section>
+{% endblock %}
+

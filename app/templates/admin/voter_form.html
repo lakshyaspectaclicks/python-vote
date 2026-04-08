@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Edit Voter{% endblock %}
+{% block content %}
+<section class="card narrow">
+  <h1>Edit Voter</h1>
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label for="student_id">Student ID</label>
+    <input id="student_id" name="student_id" type="text" required value="{{ voter.student_id }}">
+
+    <label for="full_name">Full Name</label>
+    <input id="full_name" name="full_name" type="text" required value="{{ voter.full_name }}">
+
+    <label for="class_name">Class</label>
+    <input id="class_name" name="class_name" type="text" required value="{{ voter.class_name }}">
+
+    <label for="pin">New PIN (leave blank to keep existing)</label>
+    <input id="pin" name="pin" type="text">
+
+    <label class="checkbox"><input type="checkbox" name="pin_required" {% if voter.pin_required %}checked{% endif %}> Require PIN</label>
+    <label class="checkbox"><input type="checkbox" name="is_active" {% if voter.is_active %}checked{% endif %}> Active</label>
+
+    <button type="submit" class="btn">Save Voter</button>
+  </form>
+</section>
+{% endblock %}
+

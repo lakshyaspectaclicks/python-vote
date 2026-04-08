@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Import Voters{% endblock %}
+{% block content %}
+<section class="card narrow">
+  <h1>Import Voters · {{ election.name }}</h1>
+  <p>CSV columns required: <code>student_id,full_name,class_name,pin</code></p>
+  <form method="post" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label for="csv_file">CSV File</label>
+    <input id="csv_file" name="csv_file" type="file" accept=".csv" required>
+    <button type="submit" class="btn">Import</button>
+  </form>
+  <a href="{{ url_for('admin.voters', election_id=election.id) }}" class="btn btn-small">Back to Voters</a>
+</section>
+
+{% if summary %}
+<section class="card">
+  <h2>Import Summary</h2>
+  <p>Imported: {{ summary.imported }}</p>
+  <p>Failed: {{ summary.failed }}</p>
+  {% if summary.errors %}
+  <ul>
+    {% for error in summary.errors %}
+    <li>{{ error }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</section>
+{% endif %}
+{% endblock %}
+

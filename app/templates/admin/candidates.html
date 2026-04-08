@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Candidates{% endblock %}
+{% block content %}
+<section class="card">
+  <div class="card-head">
+    <h1>Candidates · {{ election.name }}</h1>
+    <a class="btn btn-small" href="{{ url_for('admin.elections') }}">Back</a>
+  </div>
+  <form method="post" enctype="multipart/form-data" class="grid two-col">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div>
+      <label for="position_id">Position</label>
+      <select id="position_id" name="position_id" required>
+        <option value="">Select position</option>
+        {% for position in positions %}
+          <option value="{{ position.id }}">{{ position.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label for="full_name">Full Name</label>
+      <input id="full_name" name="full_name" type="text" required>
+    </div>
+    <div>
+      <label for="class_name">Class</label>
+      <input id="class_name" name="class_name" type="text" required>
+    </div>
+    <div>
+      <label for="gender">Gender</label>
+      <input id="gender" name="gender" type="text">
+    </div>
+    <div class="full-width">
+      <label for="bio">Bio / Manifesto</label>
+      <textarea id="bio" name="bio" rows="2"></textarea>
+    </div>
+    <div class="full-width">
+      <label for="photo">Photo (optional)</label>
+      <input id="photo" name="photo" type="file" accept=".jpg,.jpeg,.png,.webp">
+    </div>
+    <div class="full-width">
+      <button type="submit" class="btn">Add Candidate</button>
+    </div>
+  </form>
+</section>
+
+<section class="card">
+  <table>
+    <thead><tr><th>Photo</th><th>Name</th><th>Position</th><th>Class</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>
+      {% for candidate in candidates %}
+      <tr>
+        <td>
+          {% if candidate.photo_path %}
+            <img class="avatar" src="{{ url_for('uploaded_file', filename=candidate.photo_path) }}" alt="{{ candidate.full_name }}">
+          {% else %}
+            -
+          {% endif %}
+        </td>
+        <td>{{ candidate.full_name }}</td>
+        <td>{{ candidate.position_name }}</td>
+        <td>{{ candidate.class_name }}</td>
+        <td>{{ "Active" if candidate.is_active else "Inactive" }}</td>
+        <td class="actions">
+          <a class="btn btn-small" href="{{ url_for('admin.candidate_edit', candidate_id=candidate.id) }}">Edit</a>
+          <form method="post" action="{{ url_for('admin.candidate_delete', candidate_id=candidate.id) }}" onsubmit="return confirm('Delete candidate?')">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn btn-small btn-danger">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6">No candidates yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}
+
